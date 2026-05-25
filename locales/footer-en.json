@@ -1,0 +1,25 @@
+{
+  "_comment": "Merge under the 'marketing' namespace of your project's en.json.",
+  "marketing": {
+    "footer_product": "Product",
+    "footer_family": "Klyrix Family",
+    "footer_legal": "Legal",
+    "footer_link_features": "Features",
+    "footer_link_pricing": "Pricing",
+    "footer_link_faq": "FAQ",
+    "footer_link_klyrix_hr": "Klyrix HR",
+    "footer_link_klyrix_vds": "Klyrix VDS Farm",
+    "footer_link_klyrix_support": "Klyrix Support",
+    "footer_link_klyrix_ledger": "Klyrix Ledger",
+    "footer_link_terms": "Terms of Service",
+    "footer_link_privacy": "Privacy Policy",
+    "footer_link_kvkk": "KVKK (TR Data Law)",
+    "footer_link_security": "Security",
+    "footer_suite_title": "THE KLYRIX SUITE",
+    "footer_suite_subtitle": "Four products. One operating system for your business.",
+    "footer_current_badge": "CURRENT",
+    "footer_status_operational": "All systems operational",
+    "footer_status_degraded": "Degraded performance",
+    "footer_status_down": "Service disruption"
+  }
+}

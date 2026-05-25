@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="534" height="100" viewBox="0 0 534 100" role="img" aria-label="Klyrix/ledger">
+<title>Klyrix/ledger — horizontal lockup</title>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#94A3B8"/>
+<stop offset="100%" stop-color="#475569"/>
+</linearGradient>
+<linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="rgba(255,255,255,0.32)"/>
+<stop offset="50%" stop-color="rgba(255,255,255,0)"/>
+</linearGradient>
+</defs>
+<rect x="24" y="10.0" width="80" height="80" rx="18" fill="url(#bg)" stroke="rgba(255,255,255,0.20)" stroke-width="0.75"/>
+<rect x="24" y="10.0" width="80" height="40.0" rx="18" fill="url(#shine)"/>
+<g transform="translate(64.0,50.0) scale(1.25)">
+<rect x="-13" y="-18" width="5.5" height="36" rx="1.5" fill="#FFFFFF"/>
+<path d="M -4 0 L 9 -13" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+<path d="M -4 0 L 9 13" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+<rect x="8" y="-19" width="7" height="7" rx="1.5" fill="#FFFFFF"/>
+<rect x="8" y="12" width="7" height="7" rx="1.5" fill="#FFFFFF"/>
+</g>
+<text x="126.0" y="69.0" font-family="Arial, sans-serif" font-size="56" letter-spacing="-2.2"><tspan font-weight="700" fill="#FFFFFF">Klyrix</tspan><tspan font-weight="500" font-style="italic" fill="#64748B">/ledger</tspan></text>
+</svg>

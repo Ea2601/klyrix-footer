@@ -1,0 +1,35 @@
+/* ═══ KlyrixFooter — Mentoforce wordmark per-letter reveal ═══
+ *
+ * Hedef projenin globals.css (veya başka global stylesheet) dosyasının
+ * sonuna yapıştır. Footer'daki "MENTOFORCE" wordmark'ının hover'da harf
+ * harf "soft overlap" reveal animasyonu için gereklidir.
+ *
+ * Initial state: harfler statik. Hover ile `.animating` class eklenince
+ * her harf 0.5s'lik softOverlap keyframe'i 0.05s gecikme zinciriyle akıcı
+ * dalga halinde oynar — her an 3-4 harf farklı seviyede beliriyor.
+ * 10 harf · max delay 0.55s + 0.5s ≈ 1.05s toplam.
+ *
+ * Kaynak: https://github.com/Ea2601/klyrix-footer
+ */
+
+.kf-mentoforce .kf-ch {
+  display: inline-block;
+}
+.kf-mentoforce.animating .kf-ch {
+  opacity: 0;
+  animation: kf-soft-overlap 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.kf-mentoforce.animating .kf-ch:nth-child(1)  { animation-delay: 0.10s; }
+.kf-mentoforce.animating .kf-ch:nth-child(2)  { animation-delay: 0.15s; }
+.kf-mentoforce.animating .kf-ch:nth-child(3)  { animation-delay: 0.20s; }
+.kf-mentoforce.animating .kf-ch:nth-child(4)  { animation-delay: 0.25s; }
+.kf-mentoforce.animating .kf-ch:nth-child(5)  { animation-delay: 0.30s; }
+.kf-mentoforce.animating .kf-ch:nth-child(6)  { animation-delay: 0.35s; }
+.kf-mentoforce.animating .kf-ch:nth-child(7)  { animation-delay: 0.40s; }
+.kf-mentoforce.animating .kf-ch:nth-child(8)  { animation-delay: 0.45s; }
+.kf-mentoforce.animating .kf-ch:nth-child(9)  { animation-delay: 0.50s; }
+.kf-mentoforce.animating .kf-ch:nth-child(10) { animation-delay: 0.55s; }
+@keyframes kf-soft-overlap {
+  0%   { opacity: 0; transform: translateY(8px); filter: blur(8px); }
+  100% { opacity: 1; transform: translateY(0);   filter: blur(0); }
+}

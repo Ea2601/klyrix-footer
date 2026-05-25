@@ -1,0 +1,25 @@
+{
+  "_comment": "Hedef projenin tr.json dosyasındaki 'marketing' namespace'i altına merge et.",
+  "marketing": {
+    "footer_product": "Ürün",
+    "footer_family": "Klyrix Ailesi",
+    "footer_legal": "Yasal",
+    "footer_link_features": "Özellikler",
+    "footer_link_pricing": "Fiyatlandırma",
+    "footer_link_faq": "SSS",
+    "footer_link_klyrix_hr": "Klyrix HR",
+    "footer_link_klyrix_vds": "Klyrix VDS Farm",
+    "footer_link_klyrix_support": "Klyrix Support",
+    "footer_link_klyrix_ledger": "Klyrix Ledger",
+    "footer_link_terms": "Kullanım Koşulları",
+    "footer_link_privacy": "Gizlilik Politikası",
+    "footer_link_kvkk": "KVKK",
+    "footer_link_security": "Güvenlik",
+    "footer_suite_title": "KLYRIX SUITE",
+    "footer_suite_subtitle": "Dört ürün. İşletmeniz için tek operasyon sistemi.",
+    "footer_current_badge": "MEVCUT",
+    "footer_status_operational": "Tüm sistemler aktif",
+    "footer_status_degraded": "Yavaş yanıt",
+    "footer_status_down": "Hizmet kesintisi"
+  }
+}
