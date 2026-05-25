@@ -29,6 +29,28 @@ CSS tema değişkenleri (genelde shadcn ile gelir): `--card`, `--card-foreground
 
 ---
 
+## ⚡ Quick install — tek komut
+
+Hedef Next.js projenin **kök dizininden** (package.json'ın olduğu yer):
+
+```bash
+bash <(curl -sSL https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/scripts/install.sh)
+```
+
+Bu komut otomatik olarak şunları yapar:
+
+- `src/components/klyrix-footer/` → 3 component dosyası
+- `public/brand/{hr,platform,ledger,support}/` → 36 SVG asset
+- `src/app/api/health/route.js` → endpoint (yoksa)
+- `src/app/globals.css` → Mentoforce reveal CSS append (idempotent)
+- Sonunda checklist basar: `npm i lucide-react`, i18n merge, JSX entegrasyon
+
+Idempotent — tekrar çalıştırırsan üzerine yazar (asset/component refresh için). `/api/health` ve globals.css zaten varsa overwrite yapmaz.
+
+Manuel adım adım yapmak istersen aşağıdaki Adım 1-6'yı izle.
+
+---
+
 ## Adım 1 — Component klasörünü oluştur
 
 `src/components/klyrix-footer/` altına 3 dosya. Direkt curl ile çek:
