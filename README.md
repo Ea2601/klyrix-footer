@@ -1,59 +1,57 @@
 # Klyrix Footer
 
-Shared footer component for the Klyrix product suite — **Klyrix HR**, **Klyrix Platform** (VDS Farm), **Klyrix Ledger**, **Klyrix Support**. Drop it into any Next.js app, pass one prop (`currentApp`), and the whole brand identity (lockup, theme color, CURRENT badge, hover accents, status pill) wires itself up.
+Shared footer component for the Klyrix product suite — **Klyrix HR**, **Klyrix Platform** (VDS Farm), **Klyrix Ledger**, **Klyrix Support**.
 
-> **Kanonik sürüm**: v1.0 (`main` branch — always latest)  
-> **Live reference**: https://klyrix-hr.com  
-> **Lisans**: All rights reserved — see [LICENSE](LICENSE)
+**v2 — framework-agnostic & theme-aware.** Drop into any React app (Next.js App/Pages Router, Vite, CRA, Astro, Remix). **No Tailwind dependency. No i18n hook required. No `@/` path alias.** Footer renders identically whether the host project uses shadcn or MUI or styled-components — it carries its own internal theme palette.
+
+> **Canonical**: v2.0 (`main` branch — always latest)  
+> **Legacy**: v1.0 ([git tag](https://github.com/Ea2601/klyrix-footer/releases/tag/v1.0)) — Tailwind + useLocale required  
+> **Live ref**: https://klyrix-hr.com  
+> **License**: All rights reserved — see [LICENSE](LICENSE)
 
 ---
 
 ## Ne kurulur?
 
-- Dark-tema, tema-aware footer component (`KlyrixFooter`)
-- 4 ürünlü Suite şeridi (Platform / HR / Ledger / Support) — bulunulan app `CURRENT/MEVCUT` badge'li
-- Brand-renkli kart hover'ları, lokasyon-bazlı i18n, `/api/health` canlı status pill
-- Mentoforce holding imza şeridi — hover'da harf harf "soft overlap" reveal animasyonu
-- Site genelinde tutarlı `max-w-6xl` container, brand-color theme accent
+- Tema-aware footer (`dark` + `light` zemin desteği)
+- 4 ürünlü Suite şeridi — bulunulan app `CURRENT/MEVCUT` badge'li, brand-renkli hover
+- Layout/konum tüm app'lerde birebir aynı; sadece **arka plan** ve **yönlendirme linkleri** appe özel
+- `max-w-6xl` (1152px) içerik container, atmosphere glow full-width
+- Status pill: `/api/health` poll (opsiyonel) veya statik prop
+- Mentoforce signature — per-letter reveal animation (CSS append snippet)
 
 ## Bağımlılıklar
 
-| Şart | Versiyon | Not |
-|---|---|---|
-| Next.js | 14+ (App Router) | `'use client'` directive kullanır |
-| React | 18+ | `useState`, `useEffect`, `useRef` |
-| Tailwind CSS | 3+ veya 4 | Tema CSS var'ları gerekir (aşağıda) |
-| `lucide-react` | ≥0.300 | Sosyal ikonlar için |
+| Şart | Versiyon |
+|---|---|
+| React | 18+ |
+| Brand assets | `public/brand/{slug}/horizontal-{light,dark}.svg` (+ compact varyantları) |
 
-CSS tema değişkenleri (genelde shadcn ile gelir): `--card`, `--card-foreground`, `--foreground`, `--muted-foreground`, `--border`, `--primary`. Yoksa `globals.css`'e ekle.
+**Yok**: Tailwind, shadcn, lucide-react, useLocale hook, `@/` alias.
 
 ---
 
-## ⚡ Quick install — tek komut
+## ⚡ Hızlı kurulum (Bash + curl)
 
-Hedef Next.js projenin **kök dizininden** (package.json'ın olduğu yer):
+Hedef projenin **kök dizininden** (package.json'ın olduğu yer):
 
 ```bash
 bash <(curl -sSL https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/scripts/install.sh)
 ```
 
-Bu komut otomatik olarak şunları yapar:
-
-- `src/components/klyrix-footer/` → 3 component dosyası
+Bu komut otomatik olarak:
+- `src/components/klyrix-footer/` → component dosyaları
 - `public/brand/{hr,platform,ledger,support}/` → 36 SVG asset
 - `src/app/api/health/route.js` → endpoint (yoksa)
 - `src/app/globals.css` → Mentoforce reveal CSS append (idempotent)
-- Sonunda checklist basar: `npm i lucide-react`, i18n merge, JSX entegrasyon
 
-Idempotent — tekrar çalıştırırsan üzerine yazar (asset/component refresh için). `/api/health` ve globals.css zaten varsa overwrite yapmaz.
-
-Manuel adım adım yapmak istersen aşağıdaki Adım 1-6'yı izle.
+Sonrasında manuel: `<KlyrixFooter />` çağrısını layout'a ekle + (opsiyonel) `labels` prop ile i18n bağla.
 
 ---
 
-## Adım 1 — Component klasörünü oluştur
+## Adım 1 — Component dosyaları
 
-`src/components/klyrix-footer/` altına 3 dosya. Direkt curl ile çek:
+`src/components/klyrix-footer/` altına 2 dosya:
 
 ```bash
 mkdir -p src/components/klyrix-footer
@@ -63,11 +61,13 @@ for f in KlyrixFooter.jsx brands.js index.js; do
 done
 ```
 
+> v2'de `useLocale`/`@/` alias importları **yok**, dosyalar self-contained. Hedef projenin folder layout'una bağımlı değil.
+
 ---
 
-## Adım 2 — Brand assets'i indir
+## Adım 2 — Brand assets
 
-4 markanın 9'ar lockup/sembol SVG'sini (36 dosya):
+4 markanın 9'ar lockup SVG'sini (36 dosya):
 
 ```bash
 mkdir -p public/brand/{hr,platform,ledger,support}
@@ -84,13 +84,28 @@ for slug in hr platform ledger support; do
 done
 ```
 
-> **Convention**: `*-light.svg` = beyaz wordmark → **koyu zemin için**. `*-dark.svg` = koyu wordmark → açık zemin için. Footer her zaman `-light` kullanır.
+**Convention**: `*-light.svg` = beyaz wordmark (koyu zemin için). `*-dark.svg` = koyu wordmark (açık zemin için). Component `theme` prop'una göre otomatik doğru variant'ı seçer.
+
+`brandAssetsPath` prop ile farklı host edebilirsin (örn. CDN).
 
 ---
 
-## Adım 3 — Health endpoint (status pill için)
+## Adım 3 — `globals.css`'e Mentoforce reveal CSS
 
-Repo'da `/api/health` yoksa `src/app/api/health/route.js`'a şu basit sürümü ekle:
+Yalnızca Mentoforce wordmark'ı **hover animasyonlu** istiyorsan. Atlanırsa wordmark statik render olur — graceful degrade.
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/styles/mentoforce-reveal.css \
+  >> src/app/globals.css   # veya app'in herhangi bir global stylesheet'i
+```
+
+CSS framework-agnostic (Tailwind/shadcn'a bağımlı değil) — Vite/CRA'da da `src/index.css` veya `src/App.css` sonuna append edilebilir.
+
+---
+
+## Adım 4 — (Opsiyonel) Health endpoint
+
+Status pill canlı poll'lansın istiyorsan, hedef projede `/api/health` olmalı. Yoksa **basit template**:
 
 ```bash
 mkdir -p src/app/api/health
@@ -98,62 +113,13 @@ curl -sSL https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/examples/a
   -o src/app/api/health/route.js
 ```
 
-Bu template Supabase'e DB ping atar; Supabase kullanmıyorsan dosyayı aç ve şu basit sürümle değiştir:
-
-```js
-import { NextResponse } from 'next/server'
-export const runtime = 'edge'
-export const dynamic = 'force-dynamic'
-export async function GET() {
-  return NextResponse.json(
-    { ok: true, ts: new Date().toISOString(), checks: { db: { ok: true, ms: 0 } } },
-    { headers: { 'Cache-Control': 'no-store' } }
-  )
-}
-```
-
-Status pill'i tamamen statik istersen `<KlyrixFooter status="operational" />` ile prop pass et, polling devre dışı kalır.
+Tamamen istemiyorsan: `<KlyrixFooter status="operational" />` ile statik bağla, polling devre dışı kalır.
 
 ---
 
-## Adım 4 — globals.css'e wordmark animasyon kuralları
+## Adım 5 — Render et
 
-Mentoforce wordmark hover'da harf harf "soft overlap" reveal animasyonu kullanır — keyframe + per-letter delay zinciri `globals.css`'in sonuna eklenir:
-
-```bash
-curl -sSL https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/styles/mentoforce-reveal.css \
-  >> src/app/globals.css
-```
-
-> Atlanırsa animasyon çalışmaz ama wordmark yine görünür (graceful degrade).
-
----
-
-## Adım 5 — i18n key'lerini ekle
-
-`src/locales/tr.json` ve `en.json`'da `marketing` namespace'ine merge et — TR ve EN patch'leri:
-
-- TR: https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/locales/footer-tr.json
-- EN: https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/locales/footer-en.json
-
-Her iki dosya `_comment` field'ı dışında `marketing` altındaki 20 footer key'ini içerir. Mevcut `marketing` namespace'inin altına merge et.
-
-### `useLocale` yoksa
-Repo'da i18n hook yoksa, `KlyrixFooter.jsx`'in başındaki `import { useLocale } from '@/hooks/use-locale'` satırını çıkar ve component'in başına stub ekle:
-
-```js
-function useLocale() {
-  return { t: (k) => k.split('.').pop().replace(/_/g, ' ') }
-}
-```
-
-Bu durumda label'lar ham key'lerin son parçası gibi görünür ("suite title", "operational" vb.) — geçici sade çözüm.
-
----
-
-## Adım 6 — Render et
-
-App'in landing page'inde veya root layout'unda:
+### En basit kullanım (default İngilizce labels, dark theme)
 
 ```jsx
 import { KlyrixFooter } from '@/components/klyrix-footer'
@@ -168,9 +134,74 @@ export default function Page() {
 }
 ```
 
-Detaylı entegrasyon örneği: [`examples/integration.jsx`](examples/integration.jsx) — marketing landing için custom nav sections dahil.
+### Tam kontrol (i18n + dynamic status + custom nav)
 
-### Hangi app için `currentApp` ne olacak?
+```jsx
+import { KlyrixFooter } from '@/components/klyrix-footer'
+import { useLocale } from '@/your-i18n-hook'  // hedef projenin kendi hook'u
+
+export default function Page() {
+  const { t } = useLocale()
+  return (
+    <KlyrixFooter
+      currentApp="platform"        // 'hr' | 'platform' | 'ledger' | 'support'
+      theme="dark"                 // 'dark' | 'light' — zemin tonuna göre
+      healthUrl="/api/health"      // canlı status poll için; yoksa prop'la statik bağla
+      brandAssetsPath="/brand"     // default '/brand'; CDN için override
+      socials={{
+        x: 'https://x.com/myapp',
+        linkedin: 'https://linkedin.com/company/myapp',
+        github: 'https://github.com/myapp',
+        telegram: 'https://t.me/myapp',
+      }}
+      labels={{
+        suite: {
+          title: t('footer.suite_title'),
+          subtitle: t('footer.suite_subtitle'),
+        },
+        current: t('footer.current_badge'),
+        status: {
+          operational: t('footer.status_operational'),
+          degraded: t('footer.status_degraded'),
+          down: t('footer.status_down'),
+        },
+        columns: [
+          {
+            title: t('footer.product'),
+            links: [
+              { label: t('footer.features'), href: '#features' },
+              { label: t('footer.pricing'),  href: '#pricing' },
+              { label: t('footer.changelog'), href: '/changelog', badge: { text: 'NEW', tone: 'accent' } },
+            ],
+          },
+          {
+            title: t('footer.family'),
+            links: [
+              { brand: 'hr',       label: 'Klyrix HR',       href: 'https://klyrix-hr.com' },
+              { brand: 'platform', label: 'Klyrix Platform', href: 'https://klyrix.com' },
+              { brand: 'ledger',   label: 'Klyrix Ledger',   href: 'https://klyrix-ledger.com' },
+              { brand: 'support',  label: 'Klyrix Support',  href: 'https://klyrix-support.com' },
+            ],
+          },
+          {
+            title: t('footer.legal'),
+            links: [
+              { label: t('footer.terms'),   href: '/terms' },
+              { label: t('footer.privacy'), href: '/privacy' },
+            ],
+          },
+        ],
+      }}
+    />
+  )
+}
+```
+
+Detaylı entegrasyon: [`examples/integration.jsx`](examples/integration.jsx).
+
+---
+
+## `currentApp` haritası
 
 | App / Repo | `currentApp` | URL |
 |---|---|---|
@@ -179,19 +210,18 @@ Detaylı entegrasyon örneği: [`examples/integration.jsx`](examples/integration
 | Klyrix Ledger | `"ledger"` | klyrix-ledger.com |
 | Klyrix Support | `"support"` | klyrix-support.com |
 
-### `currentApp` neyi otomatik değiştirir?
+`currentApp` prop'u **tek seçici**. Brand bloğundaki büyük lockup + tema accent rengi + glow + CURRENT badge konumu + suite hover'ları hepsi otomatik o markaya kayar.
 
-**Tek prop, beş görsel kimlik bir arada.** `currentApp="platform"` dersen şunlar otomatik olarak Platform'a kayar:
+---
 
-| Eleman | Bağlama |
+## `theme` propu
+
+| Değer | Davranış |
 |---|---|
-| Brand bloğundaki büyük yatay lockup | `/brand/platform/horizontal-light.svg` (Cyan Klyrix/platform — h-[52px]) |
-| Tema rengi (atmosfer glow, üst aksent, pill bg, badge bg) | `#0891B2` (brands.js → `platform.colors.primary`) |
-| Status pill nokta + text rengi | Cyan + light Cyan |
-| Suite şeridindeki ActiveCard ve CURRENT badge konumu | Platform kartı |
-| Diğer 3 kartın hover rengi | Kendi brand renkleri (HR=mavi, Ledger=slate, Support=gold) |
+| `"dark"` (default) | İç tema palette koyu (beyaz text, transparan koyu bg). Brand lockup'lar `*-light.svg` variant (beyaz wordmark). |
+| `"light"` | İç tema palette açık (koyu text, transparan açık bg). Brand lockup'lar `*-dark.svg` variant (koyu wordmark). |
 
-Repo'da **4 brand'ın da SVG paketi mevcut olmalı** (Adım 2 onları zaten birden indiriyor): kendi markası brand bloğu için, diğer üçü suite kartları + hover preview'ları için.
+Footer'ın kendi `background`'ı her zaman **transparent** — hedef sayfanın arka planı görünür. `theme` sadece footer içindeki text/border/card kontrastını belirler. Bu nedenle layout/konum 100% sabit kalır; renkler hedef sayfanın bg tonuyla uyumlu olur.
 
 ---
 
@@ -199,28 +229,42 @@ Repo'da **4 brand'ın da SVG paketi mevcut olmalı** (Adım 2 onları zaten bird
 
 | Prop | Tip | Default | Açıklama |
 |---|---|---|---|
-| `currentApp` | `'platform' \| 'hr' \| 'ledger' \| 'support'` | `'hr'` | Hangi app'in CURRENT badge'ini alacağı. Tema rengini de belirler |
-| `status` | `'operational' \| 'degraded' \| 'down'` | _undefined → poll_ | Set edersen polling devre dışı, sabit status gösterir |
-| `healthUrl` | `string` | `'/api/health'` | Poll endpoint URL'i |
-| `navSections` | `NavSection[]` | _3 sütun generic_ | Sol blok altındaki 3 menü sütunu |
-| `socials` | `Partial<SOCIAL_LINKS>` | Klyrix kanonik sosyalleri | Sosyal medya link override |
+| `currentApp` | `'platform' \| 'hr' \| 'ledger' \| 'support'` | `'hr'` | CURRENT badge ve tema accent kaynağı |
+| `theme` | `'dark' \| 'light'` | `'dark'` | İç tema palette + brand lockup variant |
+| `status` | `'operational' \| 'degraded' \| 'down'` | `'operational'` veya `healthUrl` polling | Statik veya dinamik status |
+| `healthUrl` | `string` | _undefined_ | Set edilirse 60sn'de bir poll'lar |
+| `brandAssetsPath` | `string` | `'/brand'` | Brand SVG'lerinin root path'i |
+| `socials` | `{ x, linkedin, github, telegram }` | Klyrix canonical | Sosyal medya link override |
+| `labels` | `LabelsShape` | İngilizce defaults | Tüm metinler — i18n için |
+| `className` | `string` | `''` | Root `<footer>` element class |
+| `style` | `React.CSSProperties` | `{}` | Root `<footer>` element style override |
 
-### `NavLink` formatı
+### `LabelsShape`
 
 ```ts
 {
-  label: string,           // ekranda görünür (logo yoksa)
-  href: string,
-  brand?: 'hr' | 'platform' | 'ledger' | 'support',  // set ise text yerine h-[22px] lockup
-  badge?: { text: string, tone?: 'accent' | 'neutral' }  // "NEW", "12" gibi etiket
+  suite?: { title: string, subtitle: string },
+  current?: string,                                  // "CURRENT" badge
+  status?: { operational, degraded, down: string },
+  columns?: Array<{
+    title: string,
+    links: Array<{
+      label?: string,                                 // text link
+      href: string,
+      brand?: 'hr' | 'platform' | 'ledger' | 'support',  // varsa text yerine lockup
+      badge?: { text: string, tone?: 'accent' | 'neutral' },
+    }>
+  }>,
 }
 ```
+
+Verilmeyen alanlar built-in İngilizce defaults'a düşer.
 
 ---
 
 ## Brand renk paleti referansı
 
-Brand kart paketinden (koyu zemin) doğrulanmış canonical palet (`brands.js`'te tek kaynak):
+`brands.js`'ten gelen canonical palet (brand-cards koyu zemin doğrulanmış):
 
 | Brand | `primary` (italic /xxx) | `light` (pill/badge) | Etiket |
 |---|---|---|---|
@@ -229,57 +273,40 @@ Brand kart paketinden (koyu zemin) doğrulanmış canonical palet (`brands.js`'t
 | ledger | `#64748B` (Slate 500) | `#94A3B8` | Finance |
 | support | `#FBBF24` (Gold) | `#FDE047` | Premium |
 
-`primary` = wordmark italic text + atmosfer glow türevi. `light` = status pill + CURRENT badge text. `gradientStart→End` = sembol kutusunun lineer gradient'ı. `shine` = kutunun üst yarısının highlight overlay'i (gold için `#FEF9C3`, diğerleri beyaz).
-
 ---
 
-## Sık sorulan
+## Framework uyumluluğu
 
-**S: Footer her sayfada mı görünmeli?**  
-H: Senin tercihin. Marketing landing + auth sayfalarına (login, register, invite) iyi oturur. Dashboard / platform shell gibi `h-dvh + overflow-clip` yapısı kullanan sayfalarda zaten görünmez, oraya koymak güvenli ama gereksiz.
+### Next.js App Router (15+)
+- `'use client'` directive var
+- `/api/health/route.js` template doğru
+- `<img>` etiket Image optimization'a tabi değil, isteğe bağlı `next/image` ile sarılabilir
 
-**S: Max-width farklı kullanıyorum (max-w-7xl gibi).**  
-H: `KlyrixFooter.jsx` içinde 2 yerde `max-w-6xl` geçer (body + signature wrapper). Repo container'ınla aynı değere çevir.
+### Next.js Pages Router
+- `'use client'` directive ignore edilir (no-op)
+- `/api/health` için `pages/api/health.js` formatına çevir (örnek dışında)
 
-**S: Status pill'de "All systems operational" yerine başka şey istiyorum.**  
-H: `marketing.footer_status_operational` (vb.) i18n key'lerini değiştir.
+### Vite / CRA
+- `'use client'` ignore edilir
+- `brandAssetsPath="/brand"` Vite/CRA'nın `public/` serve mantığına uyumlu
+- `useEffect`/`fetch` standart
 
-**S: 4 markadan biri henüz canlıda değil, kartını gizlemek istiyorum.**  
-H: `brands.js`'te `BRAND_ORDER`'dan o slug'ı çıkar. Grid otomatik 3 kart olur — `KlyrixFooter.jsx`'teki `grid-cols-2 md:grid-cols-4` ihtiyaca göre düşür.
-
-**S: Component update'i nasıl alacağım?**  
-H: Bu repo `main` branch canonical kaynak. Yenileme için `KlyrixFooter.jsx` + `brands.js`'i `curl` ile tekrar çek (Adım 1). Brand assets nadiren değişir.
+### Astro / Remix
+- Component dosyasını React island olarak işaretle (Astro: `client:load`)
+- API endpoint'i Astro endpoints veya Remix loaders ile değiştir
 
 ---
 
 ## Troubleshooting
 
-| Belirti | Sebep / Çözüm |
+| Belirti | Çözüm |
 |---|---|
-| Sosyal ikon render yok | `npm i lucide-react` |
-| Status pill her zaman "Service disruption" | `/api/health` 200 dönmüyor — endpoint kur (Adım 3) veya `status="operational"` prop pass et |
-| Brand logoları gözükmüyor (alt text görünüyor) | `public/brand/` paketi eksik — Adım 2'yi tekrar çalıştır |
-| Logo sol kenardan içeride | Compact lockup'lar `viewBox="24 0 ..."` ile kırpılı olmalı; Adım 2'de çekilen son sürüm doğru |
-| Tema rengi yerine siyah/beyaz | `--card`, `--foreground`, `--muted-foreground`, `--border` CSS var'ları tanımlı değil — shadcn theme import et veya manuel ekle |
-| Footer ekran genişliğinde stretch oluyor | `max-w-6xl mx-auto` wrapper'lar component içinde, container'ın doğru çalıştığından emin ol |
-| Mentoforce hover'da animasyon olmuyor | Adım 4'teki `globals.css` snippet'i eksik — `.kf-mentoforce` + `@keyframes kf-soft-overlap` ekle |
-
----
-
-## Sıkıştırılmış kurulum checklist
-
-```
-[ ] src/components/klyrix-footer/ — 3 dosya (Adım 1)
-[ ] public/brand/ — 4 klasör × 9 SVG (Adım 2)
-[ ] src/app/api/health/route.js — varsa atla (Adım 3)
-[ ] globals.css — Mentoforce reveal animasyon snippet'i (Adım 4)
-[ ] locales/{tr,en}.json — marketing.footer_* key'leri (Adım 5)
-[ ] npm i lucide-react
-[ ] <KlyrixFooter currentApp="..." /> — landing/layout'a ekle (Adım 6)
-[ ] (opsiyonel) navSections override ile family sütununa brand lockup
-```
-
-Toplam transfer süresi: ~5-10 dakika per repo.
+| Brand logoları gözükmüyor (broken image) | `public/brand/` paketi eksik veya yanlış path'te — Adım 2'yi tekrar çalıştır veya `brandAssetsPath` prop'unu doğrula |
+| Renkler düz gözüküyor, hover çalışmıyor | Component inline style kullanır — Tailwind purge tarafından silinmez. Eğer hâlâ sorun varsa React versiyonu < 18 olabilir |
+| Status pill her zaman "Service disruption" | `healthUrl` set edilmiş ama endpoint 200 dönmüyor — `status="operational"` ile statik bağla veya endpoint'i düzelt |
+| Mentoforce hover animasyonu yok | `globals.css`'e Adım 3'teki snippet append edilmemiş — kontrol et |
+| Light theme'de footer çok sönük | Hedef sayfa background'ı çok açık ise `theme="light"` + atmosphere glow zayıf görünebilir; `currentApp` brand'ın `primary` rengi az kontrastlı (Slate gibi) ise bu beklenen davranış |
+| Custom font kullanmak istiyorum | `style={{ fontFamily: '...' }}` prop'u root `<footer>`'a düşer; içerideki Mentoforce wordmark `inherit` font kullanır |
 
 ---
 
@@ -287,25 +314,23 @@ Toplam transfer süresi: ~5-10 dakika per repo.
 
 ```
 klyrix-footer/
-├── README.md                            ← bu dosya (kurulum kılavuzu)
+├── README.md                            ← bu dosya
 ├── LICENSE                              ← All rights reserved
 ├── src/klyrix-footer/
-│   ├── KlyrixFooter.jsx                 ← ana component (~400 satır)
-│   ├── brands.js                        ← 4 brand config tek kaynak
+│   ├── KlyrixFooter.jsx                 ← ~470 satır, v2
+│   ├── brands.js                        ← 4 brand config
 │   └── index.js                         ← re-exports
 ├── public/brand/                        ← 4 brand × 9 SVG
-│   ├── hr/
-│   ├── platform/
-│   ├── ledger/
-│   └── support/
 ├── styles/
 │   └── mentoforce-reveal.css            ← globals.css append snippet
 ├── examples/
-│   ├── api-health.route.js              ← health endpoint template
-│   └── integration.jsx                  ← <KlyrixFooter ... /> örneği
-└── locales/
-    ├── footer-tr.json                   ← TR i18n patch
-    └── footer-en.json                   ← EN i18n patch
+│   ├── api-health.route.js              ← Next.js App Router health template
+│   └── integration.jsx                  ← v2 prop kullanımı örnekleri
+├── scripts/
+│   └── install.sh                       ← one-line installer
+└── locales/                             ← (legacy v1, opsiyonel referans)
+    ├── footer-tr.json
+    └── footer-en.json
 ```
 
 ---
@@ -314,5 +339,43 @@ klyrix-footer/
 
 Diğer Klyrix repolarındaki Claude/Cursor/Copilot agent'a:
 
-> "Bu kılavuza göre KlyrixFooter v1.0'ı kur: https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/README.md  
-> `currentApp` değeri **`platform`** (veya `ledger` / `support` / `hr`)."
+> "Bu kılavuza göre KlyrixFooter v2'yi kur: https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/README.md  
+> `currentApp` değeri **`platform`** (veya `ledger` / `support` / `hr`).  
+> `theme` değeri **`dark`** (veya `light`)."
+
+> WebFetch raw markdown'ı özetliyorsa, Bash + curl ile direkt indir:  
+> `curl -sSL https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/README.md`
+
+---
+
+## v1 → v2 Migration (Klyrix HR için)
+
+Eski sürüm `navSections` prop alıyordu. v2'de bu `labels.columns` olarak yeniden yapılandırıldı.
+
+```jsx
+// v1
+<KlyrixFooter
+  currentApp="hr"
+  navSections={[
+    { title: 'PRODUCT', links: [...] },
+    ...
+  ]}
+/>
+
+// v2
+<KlyrixFooter
+  currentApp="hr"
+  theme="dark"
+  labels={{
+    suite: { title: '...', subtitle: '...' },
+    current: 'CURRENT',
+    status: { operational: '...', degraded: '...', down: '...' },
+    columns: [
+      { title: 'PRODUCT', links: [...] },
+      ...
+    ],
+  }}
+/>
+```
+
+v1 ile geri uyumluluk yok — v2 hedeflenen "drop-in" ve "framework-agnostic" davranışı için bilinçli bir breaking change.
