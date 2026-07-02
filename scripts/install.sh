@@ -15,7 +15,8 @@
 # What it does NOT do (you do these manually):
 #   - JSON locale merge (don't want to clobber your existing tr.json/en.json)
 #   - JSX integration (where in your layout the <KlyrixFooter /> goes)
-#   - npm install lucide-react
+# NOT: İkon bağımlılığı YOKTUR — sosyal ikonlar bileşen içinde inline SVG
+# (lucide-react vb. kurmayın; lucide 1.x marka ikonlarını zaten kaldırdı).
 # ═══════════════════════════════════════════════════════════════════════
 
 set -euo pipefail
@@ -88,7 +89,8 @@ cat <<'EOF'
 ═══════════════════════════════════════════════════════════════════════
 ✅ Otomatik kurulum bitti. Geri kalan manuel adımlar:
 
-[1] npm i lucide-react   (peer dependency)
+[1] İkon bağımlılığı YOK — sosyal ikonlar bileşende inline SVG olarak gömülü.
+    (lucide-react KURMAYIN; lucide 1.x marka ikonlarını kaldırdı, gerek de yok.)
 
 [2] i18n key'lerini merge et — locales/footer-tr.json ve footer-en.json:
     curl -sSL https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/locales/footer-tr.json
