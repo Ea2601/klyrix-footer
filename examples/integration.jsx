@@ -76,8 +76,8 @@ export function FullFooter() {
 
 /* ─── 3) Light theme ─────────────────────────────────────────────────────
  * Hedef sayfa açık zemin (örn. marketing landing'in light variantı).
- * Footer içindeki text/border koyulaşır, brand lockup'lar `*-dark.svg`
- * (koyu wordmark) variant'ına otomatik geçer.
+ * Footer içindeki text/border koyulaşır, brand lockup'lar `horizontal-light.png`
+ * (koyu wordmark, açık zemin İÇİN) variant'ına otomatik geçer.
  */
 export function LightFooter() {
   return <KlyrixFooter currentApp="ledger" theme="light" />

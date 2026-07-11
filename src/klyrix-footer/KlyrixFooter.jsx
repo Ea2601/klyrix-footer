@@ -8,8 +8,10 @@
  * No i18n hook required. No CSS framework varsayımı.
  *
  * Required:
- *  - public/brand/{hr,platform,ledger,support}/horizontal-{light,dark}.svg
- *  - public/brand/{hr,platform,ledger,support}/horizontal-compact-{light,dark}.svg
+ *  - public/brand/{hr,platform,ledger,support}/horizontal-{dark,light}.png
+ *    (PNG HD set v4.3 — suffix = hedef ZEMİN: -dark koyu zemin için/beyaz
+ *    wordmark, -light açık zemin için/koyu wordmark. Compact varyant yok;
+ *    compact konumlarda da full horizontal lockup kullanılır.)
  *  - mentoforce-reveal.css (yalnızca Mentoforce wordmark hover animasyonu için;
  *    yoksa wordmark statik render olur — graceful degrade)
  *
@@ -131,14 +133,16 @@ function withAlpha(hex, alpha) {
 }
 
 /**
- * Lockup variant selector. Theme'e göre doğru SVG path'i döner.
- *   dark theme  → `*-light.svg` (beyaz wordmark, koyu zemin için)
- *   light theme → `*-dark.svg`  (koyu wordmark, açık zemin için)
+ * Lockup variant selector. Theme'e göre doğru PNG path'i döner.
+ * PNG set v4.3 convention'ı (eski SVG setinin TERSİ): suffix = hedef ZEMİN.
+ *   dark theme  → `horizontal-dark.png`  (beyaz wordmark, koyu zemin İÇİN)
+ *   light theme → `horizontal-light.png` (koyu wordmark, açık zemin İÇİN)
+ * `compact` parametresi API uyumluluğu için duruyor — sette compact varyant
+ * olmadığından her iki durumda da full horizontal lockup döner.
  */
-function lockup(slug, theme, basePath, compact = false) {
-  const variant = theme === 'light' ? 'dark' : 'light'
-  const suffix = compact ? `horizontal-compact-${variant}` : `horizontal-${variant}`
-  return `${basePath}/${slug}/${suffix}.svg`
+function lockup(slug, theme, basePath, compact = false) { // eslint-disable-line no-unused-vars
+  const variant = theme === 'light' ? 'light' : 'dark'
+  return `${basePath}/${slug}/horizontal-${variant}.png`
 }
 
 /* ─── Ana component ──────────────────────────────────────────────────────*/

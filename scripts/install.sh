@@ -8,7 +8,7 @@
 # What it does (idempotent, safe to re-run):
 #   1. Creates folders: src/components/klyrix-footer, public/brand/{4 dirs},
 #      src/app/api/health
-#   2. Downloads component files (3), brand assets (36 SVG), health endpoint
+#   2. Downloads component files (3), brand assets (8 PNG), health endpoint
 #   3. Appends Mentoforce reveal CSS to src/app/globals.css (if not already)
 #   4. Prints next-steps checklist (manual: i18n merge, JSX integration)
 #
@@ -44,20 +44,17 @@ for f in KlyrixFooter.jsx brands.js index.js; do
   echo "  ✓ src/components/klyrix-footer/$f"
 done
 
-# ─── 3. Brand assets (4 brand × 9 SVG = 36 files) ────────────────────────
-echo "▶ Brand assets indiriliyor (36 SVG)…"
+# ─── 3. Brand assets (4 brand × 2 PNG = 8 files) ─────────────────────────
+# PNG HD set v4.3 — suffix = hedef ZEMİN (-dark koyu zemin, -light açık zemin).
+echo "▶ Brand assets indiriliyor (8 PNG)…"
 ASSETS=(
-  horizontal-light.svg horizontal-dark.svg
-  horizontal-compact-light.svg horizontal-compact-dark.svg
-  vertical-light.svg vertical-dark.svg
-  wordmark-light.svg wordmark-dark.svg
-  symbol.svg
+  horizontal-dark.png horizontal-light.png
 )
 for slug in hr platform ledger support; do
   for asset in "${ASSETS[@]}"; do
     curl -sSL "$BASE/public/brand/$slug/$asset" -o "$TARGET/public/brand/$slug/$asset"
   done
-  echo "  ✓ public/brand/$slug/ (9 SVG)"
+  echo "  ✓ public/brand/$slug/ (2 PNG)"
 done
 
 # ─── 4. Health endpoint (only if missing — won't overwrite yours) ────────

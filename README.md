@@ -4,7 +4,7 @@ Shared footer component for the Klyrix product suite — **Klyrix HR**, **Klyrix
 
 **v2 — framework-agnostic & theme-aware.** Drop into any React app (Next.js App/Pages Router, Vite, CRA, Astro, Remix). **No Tailwind dependency. No i18n hook required. No `@/` path alias.** Footer renders identically whether the host project uses shadcn or MUI or styled-components — it carries its own internal theme palette.
 
-> **Canonical**: v2.0 (`main` branch — always latest)  
+> **Canonical**: v2.1 (`main` branch — always latest) — **2026-07-12: brand asset'ler SVG'den PNG HD set v4.3'e geçti; suffix convention'ı TERSİNE DÖNDÜ** (`-dark` artık koyu zemin İÇİN demek). Eski SVG'ler `legacy-svg/` altında.  
 > **Legacy**: v1.0 ([git tag](https://github.com/Ea2601/klyrix-footer/releases/tag/v1.0)) — Tailwind + useLocale required  
 > **Live ref**: https://klyrix-hr.com  
 > **License**: All rights reserved — see [LICENSE](LICENSE)
@@ -25,7 +25,7 @@ Shared footer component for the Klyrix product suite — **Klyrix HR**, **Klyrix
 | Şart | Versiyon |
 |---|---|
 | React | 18+ |
-| Brand assets | `public/brand/{slug}/horizontal-{light,dark}.svg` (+ compact varyantları) |
+| Brand assets | `public/brand/{slug}/horizontal-{dark,light}.png` (PNG HD set v4.3; compact varyant yok) |
 
 **Yok**: Tailwind, shadcn, lucide-react, useLocale hook, `@/` alias.
 
@@ -41,7 +41,7 @@ bash <(curl -sSL https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/scr
 
 Bu komut otomatik olarak:
 - `src/components/klyrix-footer/` → component dosyaları
-- `public/brand/{hr,platform,ledger,support}/` → 36 SVG asset
+- `public/brand/{hr,platform,ledger,support}/` → 8 PNG asset
 - `src/app/api/health/route.js` → endpoint (yoksa)
 - `src/app/globals.css` → Mentoforce reveal CSS append (idempotent)
 
@@ -67,24 +67,21 @@ done
 
 ## Adım 2 — Brand assets
 
-4 markanın 9'ar lockup SVG'sini (36 dosya):
+4 markanın 2'şer horizontal lockup PNG'sini (8 dosya, ~2900×512 @8x):
 
 ```bash
 mkdir -p public/brand/{hr,platform,ledger,support}
 BASE="https://raw.githubusercontent.com/Ea2601/klyrix-footer/main/public/brand"
 for slug in hr platform ledger support; do
-  for asset in \
-    horizontal-light.svg horizontal-dark.svg \
-    horizontal-compact-light.svg horizontal-compact-dark.svg \
-    vertical-light.svg vertical-dark.svg \
-    wordmark-light.svg wordmark-dark.svg \
-    symbol.svg; do
+  for asset in horizontal-dark.png horizontal-light.png; do
     curl -sSL "$BASE/$slug/$asset" -o "public/brand/$slug/$asset"
   done
 done
 ```
 
-**Convention**: `*-light.svg` = beyaz wordmark (koyu zemin için). `*-dark.svg` = koyu wordmark (açık zemin için). Component `theme` prop'una göre otomatik doğru variant'ı seçer.
+**Convention (v2.1, PNG HD set v4.3 — eski SVG setinin TERSİ!)**: suffix = **hedef zemin**. `*-dark.png` = KOYU zemin İÇİN (beyaz wordmark). `*-light.png` = AÇIK zemin İÇİN (koyu wordmark). Component `theme` prop'una göre otomatik doğru variant'ı seçer. PNG'yi asla büyütme — küçültmek serbest.
+
+> Eski 36 SVG'lik set `legacy-svg/brand/` altında arşivlendi (eski convention: suffix = yazı rengi). Yeni kurulumlarda kullanılmamalı.
 
 `brandAssetsPath` prop ile farklı host edebilirsin (örn. CDN).
 
@@ -218,8 +215,8 @@ Detaylı entegrasyon: [`examples/integration.jsx`](examples/integration.jsx).
 
 | Değer | Davranış |
 |---|---|
-| `"dark"` (default) | İç tema palette koyu (beyaz text, transparan koyu bg). Brand lockup'lar `*-light.svg` variant (beyaz wordmark). |
-| `"light"` | İç tema palette açık (koyu text, transparan açık bg). Brand lockup'lar `*-dark.svg` variant (koyu wordmark). |
+| `"dark"` (default) | İç tema palette koyu (beyaz text, transparan koyu bg). Brand lockup'lar `horizontal-dark.png` variant (beyaz wordmark — koyu zemin İÇİN). |
+| `"light"` | İç tema palette açık (koyu text, transparan açık bg). Brand lockup'lar `horizontal-light.png` variant (koyu wordmark — açık zemin İÇİN). |
 
 Footer'ın kendi `background`'ı her zaman **transparent** — hedef sayfanın arka planı görünür. `theme` sadece footer içindeki text/border/card kontrastını belirler. Bu nedenle layout/konum 100% sabit kalır; renkler hedef sayfanın bg tonuyla uyumlu olur.
 
@@ -233,7 +230,7 @@ Footer'ın kendi `background`'ı her zaman **transparent** — hedef sayfanın a
 | `theme` | `'dark' \| 'light'` | `'dark'` | İç tema palette + brand lockup variant |
 | `status` | `'operational' \| 'degraded' \| 'down'` | `'operational'` veya `healthUrl` polling | Statik veya dinamik status |
 | `healthUrl` | `string` | _undefined_ | Set edilirse 60sn'de bir poll'lar |
-| `brandAssetsPath` | `string` | `'/brand'` | Brand SVG'lerinin root path'i |
+| `brandAssetsPath` | `string` | `'/brand'` | Brand PNG'lerinin root path'i |
 | `socials` | `{ x, linkedin, github, telegram }` | Klyrix canonical | Sosyal medya link override |
 | `labels` | `LabelsShape` | İngilizce defaults | Tüm metinler — i18n için |
 | `className` | `string` | `''` | Root `<footer>` element class |
@@ -320,7 +317,8 @@ klyrix-footer/
 │   ├── KlyrixFooter.jsx                 ← ~470 satır, v2
 │   ├── brands.js                        ← 4 brand config
 │   └── index.js                         ← re-exports
-├── public/brand/                        ← 4 brand × 9 SVG
+├── public/brand/                        ← 4 brand × 2 PNG (horizontal-{dark,light})
+├── legacy-svg/brand/                    ← eski 36 SVG set (deprecated, eski convention)
 ├── styles/
 │   └── mentoforce-reveal.css            ← globals.css append snippet
 ├── examples/
